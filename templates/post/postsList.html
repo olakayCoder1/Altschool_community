@@ -1,0 +1,408 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block current_title %}For you {% endblock %}
+{% block content %}
+<div class="d-flex flex-column flex-md-row">
+    <!--begin::Aside-->
+    <!--end::Aside-->
+    <!--begin::Content-->
+    <div class="flex-md-row-fluid ml-md-6 ml-lg-8">
+        <div class="row">
+            <div class="col-xxl-8">
+                <!--begin::Forms Widget 2-->
+                <div class="card card-custom gutter-b">
+                    <!--begin::Body-->
+                    <div class="card-body">
+                        <!--begin::Top-->
+                        <div class="d-flex align-items-center">
+                            <!--begin::Symbol-->
+                            <div class="symbol symbol-40 symbol-light-success mr-5">
+                                <span class="symbol-label">
+                                    <img src="{{ request.user.profile.image.url }}" style="width: 100%; height:100%; border-radius: 10px ;"  alt="" />
+                                </span>
+                            </div>
+                            <!--end::Symbol-->
+                            <!--begin::Description-->
+                            <span class="text-muted font-weight-bold font-size-lg">What’s on your mind, {{request.user.username}}?</span>
+                            <!--end::Description-->
+                        </div>
+                        <!--end::Top-->
+                        <!--begin::Form-->
+                        <form  class="pt-6 ql-quil ql-quil-plain" method="post" action="{% url 'create_post' %}" id="profileUpdateForm">
+                            {% csrf_token %}
+                            <!--begin::Editor-->
+                            <div class="form-group mb-1">
+                                <textarea class="form-control" id="exampleTextarea" rows="3" style="border:none ;" placeholder="Start writing...." required name="content"></textarea>
+                            </div>
+                            <input type="file" name="image"  accept=".png, .jpg, .jpeg">
+                            <!--end::Editor-->
+                            <div class="d-flex align-items-center justify-content-between p-1 w-contain">
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary mr-2">Post</button>
+                                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                                </div>
+                                <div class="">
+                                    <span class="svg-icon svg-icon-primary svg-icon-3x cursor-pointer" onclick="pickImage">
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <rect x="0" y="0" width="24" height="24"/>
+                                                <path d="M3.5,21 L20.5,21 C21.3284271,21 22,20.3284271 22,19.5 L22,8.5 C22,7.67157288 21.3284271,7 20.5,7 L10,7 L7.43933983,4.43933983 C7.15803526,4.15803526 6.77650439,4 6.37867966,4 L3.5,4 C2.67157288,4 2,4.67157288 2,5.5 L2,19.5 C2,20.3284271 2.67157288,21 3.5,21 Z" fill="#000000" opacity="0.3"/>
+                                                <polygon fill="#000000" opacity="0.3" points="4 19 10 11 16 19"/>
+                                                <polygon fill="#000000" points="11 19 15 14 19 19"/>
+                                                <path d="M18,12 C18.8284271,12 19.5,11.3284271 19.5,10.5 C19.5,9.67157288 18.8284271,9 18,9 C17.1715729,9 16.5,9.67157288 16.5,10.5 C16.5,11.3284271 17.1715729,12 18,12 Z" fill="#000000" opacity="0.3"/>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+                            <!--end::Toolbar-->
+                        </form>
+                        <!--end::Form-->
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Forms Widget 2-->
+                <!--begin::Forms Widget 3-->
+                {% for post in posts %}
+                <div class="card card-custom gutter-b">
+                    <!--begin::Body-->
+                    <div class="card-body">
+                        <!--begin::Header-->
+                        <div class="d-flex align-items-center">
+                            <!--begin::Symbol-->
+                            <div class="symbol symbol-40 symbol-light-success mr-5">
+                                <span class="symbol-label">
+                                    <img src="{{ post.user.profile.image.url }}" class="" style="width: 100%; height:100%; border-radius: 10px ;" alt="" />
+                                </span>
+                            </div>
+                            <!--end::Symbol-->
+                            <!--begin::Info-->
+                            <div class="d-flex flex-column flex-grow-1">
+                                <a href="#" class="text-dark-75 text-hover-primary mb-1 font-size-lg font-weight-bolder">{{ post.user.username }}</a>
+                                <span class="text-muted font-weight-bold">{{ post.created_at}}</span>
+                                
+                            </div>
+                            <!--end::Info-->
+                            <!--begin::Dropdown-->
+                            {% if post.user.id == request.user.id %}
+                            <div class="dropdown dropdown-inline ml-2" data-toggle="tooltip" title="Quick actions" data-placement="left">
+                                <a href="#" class="btn btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="ki ki-bold-more-hor"></i>
+                                </a>
+                                <div class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right">
+                                    <!--begin::Navigation-->
+                                    <ul class="navi navi-hover">
+                                        <li class="navi-item">
+                                            <a href="{% url 'delete_post' id=post.id %}" class="navi-link">
+                                                <span class="navi-text">
+                                                    <span class="label label-xl label-inline label-light-danger">Delete post</span>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <!--end::Navigation-->
+                                </div>
+                            </div>
+                            {% endif %}
+                            <!--end::Dropdown-->
+                        </div>
+                        <!--end::Header-->
+                        <!--begin::Body-->
+                        <div class="pt-5">
+                            {% if post.image %}
+                            <div class="bgi-no-repeat bgi-size-cover rounded min-h-265px" style="background-image: url({{post.image.url}})"></div>
+                            {% endif %}
+                            <!--begin::Text-->
+                            <p class="text-dark-75 font-size-lg font-weight-normal mb-2">{{ post.content }}</p>
+                            <!--end::Text-->
+                            <!--begin::Action-->
+                            <div class="d-flex align-items-center">
+                                <a href="#" class="btn btn-hover-text-primary btn-hover-icon-primary btn-sm btn-text-dark-50 bg-hover-light-primary rounded font-weight-bolder font-size-sm p-2 mr-2">
+                                <span class="svg-icon svg-icon-md svg-icon-dark-25 pr-2">
+                                    <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Group-chat.svg-->
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24" />
+                                            <path d="M16,15.6315789 L16,12 C16,10.3431458 14.6568542,9 13,9 L6.16183229,9 L6.16183229,5.52631579 C6.16183229,4.13107011 7.29290239,3 8.68814808,3 L20.4776218,3 C21.8728674,3 23.0039375,4.13107011 23.0039375,5.52631579 L23.0039375,13.1052632 L23.0206157,17.786793 C23.0215995,18.0629336 22.7985408,18.2875874 22.5224001,18.2885711 C22.3891754,18.2890457 22.2612702,18.2363324 22.1670655,18.1421277 L19.6565168,15.6315789 L16,15.6315789 Z" fill="#000000" />
+                                            <path d="M1.98505595,18 L1.98505595,13 C1.98505595,11.8954305 2.88048645,11 3.98505595,11 L11.9850559,11 C13.0896254,11 13.9850559,11.8954305 13.9850559,13 L13.9850559,18 C13.9850559,19.1045695 13.0896254,20 11.9850559,20 L4.10078614,20 L2.85693427,21.1905292 C2.65744295,21.3814685 2.34093638,21.3745358 2.14999706,21.1750444 C2.06092565,21.0819836 2.01120804,20.958136 2.01120804,20.8293182 L2.01120804,18.32426 C1.99400175,18.2187196 1.98505595,18.1104045 1.98505595,18 Z M6.5,14 C6.22385763,14 6,14.2238576 6,14.5 C6,14.7761424 6.22385763,15 6.5,15 L11.5,15 C11.7761424,15 12,14.7761424 12,14.5 C12,14.2238576 11.7761424,14 11.5,14 L6.5,14 Z M9.5,16 C9.22385763,16 9,16.2238576 9,16.5 C9,16.7761424 9.22385763,17 9.5,17 L11.5,17 C11.7761424,17 12,16.7761424 12,16.5 C12,16.2238576 11.7761424,16 11.5,16 L9.5,16 Z" fill="#000000" opacity="0.3" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>{{ post.total_comments}}</a>
+                                <a href="#" class="btn btn-sm btn-text-dark-50 btn-hover-icon-danger btn-hover-text-danger bg-hover-light-danger font-weight-bolder rounded font-size-sm p-2">
+                                <span class="svg-icon svg-icon-md svg-icon-dark-25 pr-1">
+                                    <!--begin::Svg Icon | path:assets/media/svg/icons/General/Heart.svg-->
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <polygon points="0 0 24 0 24 24 0 24" />
+                                            <path d="M16.5,4.5 C14.8905,4.5 13.00825,6.32463215 12,7.5 C10.99175,6.32463215 9.1095,4.5 7.5,4.5 C4.651,4.5 3,6.72217984 3,9.55040872 C3,12.6834696 6,16 12,19.5 C18,16 21,12.75 21,9.75 C21,6.92177112 19.349,4.5 16.5,4.5 Z" fill="#000000" fill-rule="nonzero" />
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span>{{ post.total_likes}}</a>
+                            </div>
+                            <!--end::Action-->
+                        </div>
+                        {% if post.get_comments%}
+                        {% for comment in post.get_comments %}
+                        <div class="d-flex pt-2">
+                            <!--begin::Symbol-->
+                            <div class="symbol symbol-40 symbol-light-success mr-5 mt-1">
+                                <span class="symbol-label">
+                                    <img src="{{ comment.user.profile.image.url }}" class="" style="width: 100%; height:100%; border-radius: 10px ;" alt="" />
+                                </span>
+                            </div>
+                            <!--end::Symbol-->
+                            <!--begin::Info-->
+                            <div class="d-flex flex-column flex-row-fluid">
+                                <!--begin::Info-->
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <a href="#" class="text-dark-75 text-hover-primary mb-1 font-size-lg font-weight-bolder pr-6">{{ comment.user.username}}</a>
+                                    <span class="text-muted font-weight-normal flex-grow-1 font-size-sm">{{ comment.created_at }}</span>
+                                    {% if comment.user.id == request.user.id %}
+                                        <a href="{% url 'delete_comment' id=comment.id %}" class="text-danger font-weight-normal font-size-sm">delete</a>
+                                        
+                                    {% endif%}
+                                </div>
+                                <span class="text-dark-75 font-size-sm font-weight-normal pt-1">{{comment.content }}</span>
+                                <!--end::Info-->
+                            </div>
+                            <!--end::Info-->
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <!--end::Body-->
+                        <!--begin::Separator-->
+                        <div class="separator separator-solid mt-2 mb-4"></div>
+                        <!--end::Separator-->
+                        <!--begin::Editor-->
+                        <form class="position-relative comment-form" method="post"  action="{% url 'create_comment' id=post.id %}">
+                            {% csrf_token %}
+                            <input  class="form-control border-0 p-0 pr-10 resize-none" name="content"  placeholder="Comment..." required></input>
+                        </form>
+                        <!--edit::Editor-->
+                    </div>
+                    <!--end::Body-->
+                </div>
+                {% endfor %}
+                <!--end::Forms Widget 4-->
+                <div class="text-center pb-7 pb-xxl-1">
+                    <button class="btn btn-primary font-weight-bolder font-size-sm py-3 px-9" id="kt_app_education_more_feeds_btn">More Feeds</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <!--end::Content-->
+    <div class="col-xl-4">
+        <!--begin::List Widget 18-->
+        <div class="card card-custom gutter-b">
+            <!--begin::Header-->
+            <div class="card-header border-0 pt-7">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label font-weight-bold font-size-h4 text-dark-75">Latest </span>
+                    <span class="text-muted mt-3 font-weight-bold font-size-sm">Last week
+                    <!-- <span class="text-primary font-weight-bolder">9 accidents</span></span> -->
+                </h3>
+                <div class="card-toolbar">
+                    <ul class="nav nav-pills nav-pills-sm nav-dark">
+                        <li class="nav-item ml-0">
+                            <a class="nav-link py-2 px-4 font-weight-bolder font-size-sm" data-toggle="tab" href="#kt_tab_pane_1_1">Year</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-2 px-4 active font-weight-bolder font-size-sm" data-toggle="tab" href="#kt_tab_pane_2_2">Month</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--end::Header-->
+            <!--begin::Body-->
+            <div class="card-body pt-1">
+                <div class="tab-content mt-5" id="myTabLIist18">
+                    <!--begin::Tap pane-->
+                    <div class="tab-pane fade" id="kt_tab_pane_1_1" role="tabpanel" aria-labelledby="kt_tab_pane_1_1">
+                        <!--begin::Form-->
+                        <div class="form">
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center pb-9">
+                                <!--begin::Symbol-->
+                                <div class="symbol symbol-60 symbol-2by3 flex-shrink-0 mr-4">
+                                    <div class="symbol-label" style="background-image: url('assets/media/stock-600x400/img-25.jpg')"></div>
+                                </div>
+                                <!--end::Symbol-->
+                                <!--begin::Section-->
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <!--begin::Title-->
+                                    <a href="#" class="text-dark-75 font-weight-bolder text-hover-primary font-size-lg mb-1">Nike &amp; Blue</a>
+                                    <!--end::Title-->
+                                    <!--begin::Desc-->
+                                    <span class="text-dark-50 font-weight-normal font-size-sm">Your website will have long term business should think about those term business</span>
+                                    <!--begin::Desc-->
+                                </div>
+                                <!--end::Section-->
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center pb-9">
+                                <!--begin::Symbol-->
+                                <div class="symbol symbol-60 symbol-2by3 flex-shrink-0 mr-4">
+                                    <div class="symbol-label" style="background-image: url('assets/media/stock-600x400/img-24.jpg')"></div>
+                                </div>
+                                <!--end::Symbol-->
+                                <!--begin::Section-->
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <!--begin::Title-->
+                                    <a href="#" class="text-dark-75 font-weight-bolder text-hover-primary font-size-lg mb-1">Red Boots</a>
+                                    <!--end::Title-->
+                                    <!--begin::Desc-->
+                                    <span class="text-dark-50 font-weight-normal font-size-sm">Have long term business objectives. You should think about those long term business</span>
+                                    <!--begin::Desc-->
+                                </div>
+                                <!--end::Section-->
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center pb-9">
+                                <!--begin::Symbol-->
+                                <div class="symbol symbol-60 symbol-2by3 flex-shrink-0 mr-4">
+                                    <div class="symbol-label" style="background-image: url('assets/media/stock-600x400/img-20.jpg')"></div>
+                                </div>
+                                <!--end::Symbol-->
+                                <!--begin::Section-->
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <!--begin::Title-->
+                                    <a href="#" class="text-dark-75 font-weight-bolder font-size-lg text-hover-primary mb-1">Cup &amp; Green</a>
+                                    <!--end::Title-->
+                                    <!--begin::Desc-->
+                                    <span class="text-dark-50 font-weight-normal font-size-sm">Your company your website have long term business objectives. You should think about</span>
+                                    <!--begin::Desc-->
+                                </div>
+                                <!--end::Section-->
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center pb-6">
+                                <!--begin::Symbol-->
+                                <div class="symbol symbol-60 symbol-2by3 flex-shrink-0 mr-4">
+                                    <div class="symbol-label" style="background-image: url('assets/media/stock-600x400/img-19.jpg')"></div>
+                                </div>
+                                <!--end::Symbol-->
+                                <!--begin::Section-->
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <!--begin::Title-->
+                                    <a href="#" class="text-dark-75 font-weight-bolder text-hover-primary font-size-lg mb-1">Yellow Background</a>
+                                    <!--end::Title-->
+                                    <!--begin::Desc-->
+                                    <span class="text-dark-50 font-weight-normal font-size-sm">Your company will have long term business objectives You should think about those long</span>
+                                    <!--begin::Desc-->
+                                </div>
+                                <!--end::Section-->
+                            </div>
+                            <!--end::Item-->
+                        </div>
+                        <!--end::Form-->
+                    </div>
+                    <!--end::Tap pane-->
+                    <!--begin::Tap pane-->
+                    <div class="tab-pane fade show active" id="kt_tab_pane_2_2" role="tabpanel" aria-labelledby="kt_tab_pane_2_2">
+                        <!--begin::Form-->
+                        <div class="form">
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center pb-9">
+                                <!--begin::Symbol-->
+                                <div class="symbol symbol-60 symbol-2by3 flex-shrink-0 mr-4">
+                                    <div class="symbol-label" style="background-image: url('assets/media/stock-600x400/img-20.jpg')"></div>
+                                </div>
+                                <!--end::Symbol-->
+                                <!--begin::Section-->
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <!--begin::Title-->
+                                    <a href="#" class="text-dark-75 font-weight-bolder font-size-lg text-hover-primary mb-1">Cup &amp; Green</a>
+                                    <!--end::Title-->
+                                    <!--begin::Desc-->
+                                    <span class="text-dark-50 font-weight-normal font-size-sm">Your company your website have long term business objectives. You should think about</span>
+                                    <!--begin::Desc-->
+                                </div>
+                                <!--end::Section-->
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center pb-9">
+                                <!--begin::Symbol-->
+                                <div class="symbol symbol-60 symbol-2by3 flex-shrink-0 mr-4">
+                                    <div class="symbol-label" style="background-image: url('assets/media/stock-600x400/img-19.jpg')"></div>
+                                </div>
+                                <!--end::Symbol-->
+                                <!--begin::Section-->
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <!--begin::Title-->
+                                    <a href="#" class="text-dark-75 font-weight-bolder text-hover-primary font-size-lg mb-1">Yellow Background</a>
+                                    <!--end::Title-->
+                                    <!--begin::Desc-->
+                                    <span class="text-dark-50 font-weight-normal font-size-sm">Your company will have long term business objectives You should think about those long</span>
+                                    <!--begin::Desc-->
+                                </div>
+                                <!--end::Section-->
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center pb-9">
+                                <!--begin::Symbol-->
+                                <div class="symbol symbol-60 symbol-2by3 flex-shrink-0 mr-4">
+                                    <div class="symbol-label" style="background-image: url('assets/media/stock-600x400/img-25.jpg')"></div>
+                                </div>
+                                <!--end::Symbol-->
+                                <!--begin::Section-->
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <!--begin::Title-->
+                                    <a href="#" class="text-dark-75 font-weight-bolder text-hover-primary font-size-lg mb-1">Nike &amp; Blue</a>
+                                    <!--end::Title-->
+                                    <!--begin::Desc-->
+                                    <span class="text-dark-50 font-weight-normal font-size-sm">Your website will have long term business should think about those term business</span>
+                                    <!--begin::Desc-->
+                                </div>
+                                <!--end::Section-->
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center pb-6">
+                                <!--begin::Symbol-->
+                                <div class="symbol symbol-60 symbol-2by3 flex-shrink-0 mr-4">
+                                    <div class="symbol-label" style="background-image: url('assets/media/stock-600x400/img-24.jpg')"></div>
+                                </div>
+                                <!--end::Symbol-->
+                                <!--begin::Section-->
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <!--begin::Title-->
+                                    <a href="#" class="text-dark-75 font-weight-bolder text-hover-primary font-size-lg mb-1">Red Boots</a>
+                                    <!--end::Title-->
+                                    <!--begin::Desc-->
+                                    <span class="text-dark-50 font-weight-normal font-size-sm">Have long term business objectives. You should think about those long term business</span>
+                                    <!--begin::Desc-->
+                                </div>
+                                <!--end::Section-->
+                            </div>
+                            <!--end::Item-->
+                        </div>
+                        <!--end::Form-->
+                    </div>
+                    <!--end::Tap pane-->
+                </div>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::List Widget 18-->
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    
+
+    const profileForm = document.getElementById('profileUpdateForm')
+    profileForm.addEventListener('submit', function handleProfileFormSubmit(event){
+        event.preventDefault()
+        console.log('Submitted')
+    })
+</script>
+{% endblock %}
